@@ -7,12 +7,53 @@ import goit.model.Tag;
 import goit.model.status.PetStatus;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.URLEncoder;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        new MainDialog().getRequestMethod();
+    }
+
+
+    private void testJson(){
+        Pet pet = new Main().fillPet();
+        Gson gson = new Gson();
+        String json = gson.toJson(pet);
+        System.out.println(json);
+//        WebClient client = new WebClient();
+//        client.start();
+    }
+    private Pet fillPet(){
+        Pet pet = new Pet();
+
+        Category category = new Category();
+        category.id = 0;
+        category.name = "category string";
+        pet.category = category;
+
+        Tag[] tags = new Tag[1];
+        tags[0] = getTags();
+        pet.tags = tags;
+
+        String[] photos = new String[1];
+        photos[0] = "photoURI1";
+        pet.photoUrls = photos;
+
+        pet.id = 1;
+        pet.name = "Butuz";
+
+        pet.status = PetStatus.available;
+
+        return pet;
+    }
+
+    private Tag getTags(){
+        Tag tag = new Tag();
+        tag.id = (int)(Math.random()*100);
+        tag.name = "tag name";
+        return tag;
+    }
+}
+/*
 //        WebClient client = new WebClient();
 //        client.start();
         String params = URLEncoder.encode("status", "UTF-8") + "=" +
@@ -94,3 +135,4 @@ public class Main {
         return tag;
     }
 }
+*/
