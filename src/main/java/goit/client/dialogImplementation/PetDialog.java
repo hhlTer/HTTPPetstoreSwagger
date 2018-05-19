@@ -1,5 +1,6 @@
 package goit.client.dialogImplementation;
 
+import com.google.gson.reflect.TypeToken;
 import goit.client.service.DialogService;
 import goit.controler.util.HttpHeaders;
 import goit.controler.web.WebClient2;
@@ -8,9 +9,11 @@ import goit.model.Pet;
 import goit.model.status.PetStatus;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
-public class PetDialog<T extends Entity> extends GeneralDialog implements CaseDialog{
-    WebClient2<Pet> petWebClient2;
+public class PetDialog<T extends Entity> extends GeneralDialog<Pet> implements CaseDialog{
 
     @Override
     public void getDialog() {
@@ -29,7 +32,8 @@ public class PetDialog<T extends Entity> extends GeneralDialog implements CaseDi
                 path = "/v2/pet/" + id;
                 try {
                     petWebClient2 = new WebClient2<>(HttpHeaders.HOST.getDefaultValue(), 80);
-                    pet = (Pet)petWebClient2.getByPath(path, Pet.class);
+//                    pet = (Pet)petWebClient2.getByPath(path, Pet.class);
+                    pet = getEntityByPath(path, Pet.class);
                     System.out.println(pet);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -44,15 +48,16 @@ public class PetDialog<T extends Entity> extends GeneralDialog implements CaseDi
                         c == 'p' ? PetStatus.pending :
                                 PetStatus.sold;
                 try {
-                    path = "/v2/pet/findByStatus?status=" + c;
+                    path = "/v2/pet/findByStatus?status=" + petStatus.name();
                     petWebClient2 = new WebClient2<>(HttpHeaders.HOST.getDefaultValue(), 80);
-                    pet = (Pet)petWebClient2.getByPath(path, Pet.class);
-                    System.out.println(pet);
+                    List<Pet> petList = getListEntity(path, new TypeToken<List<Pet>>(){}.getType());
+                    petList.stream()
+                            .sorted(Comparator.comparingLong(p -> p.id))
+                            .forEach(System.out::println);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-//                pet = (Pet)getEntityByStatus(Pet.class, petStatus.name());
-//                System.out.println(pet.toString());
                 break;
             case 'b':
                 return;
