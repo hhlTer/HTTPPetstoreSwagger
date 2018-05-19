@@ -1,7 +1,7 @@
 package goit.model;
 
 public class User implements Entity{
-    public int id;
+    public long id;
     public String username;
     public String firstName;
     public String lastName;

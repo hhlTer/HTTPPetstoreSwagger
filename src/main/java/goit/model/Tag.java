@@ -1,7 +1,7 @@
 package goit.model;
 
 public class Tag {
-    public int id;
+    public long id;
 
     @Override
     public String toString() {

@@ -5,7 +5,7 @@ import goit.model.status.PetStatus;
 import java.util.Arrays;
 
 public class Pet implements Entity{
-    public int id;
+    public long id;
     public Category category;
     public String name;
     public String[] photoUrls;

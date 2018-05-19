@@ -5,9 +5,9 @@ import goit.model.status.OrderStatus;
 import java.time.Instant;
 
 public class Order implements Entity{
-    public int id;
-    public int petId;
-    public int quantity;
+    public long id;
+    public long petId;
+    public long quantity;
     public Instant shipDate;
     public OrderStatus status;
     public boolean complete = false;

@@ -7,7 +7,7 @@ import goit.model.Pet;
 public class DialogMakerPet implements DialogMaker {
     @Override
     public CaseDialog caseDialog() {
-        CaseDialog<Pet> petCaseDialog = new PetDialog();
+        CaseDialog petCaseDialog = new PetDialog();
         return petCaseDialog;
     }
 }
