@@ -2,6 +2,7 @@ package goit.controler.web;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import goit.client.service.DialogService;
 import goit.controler.util.HttpHeaders;
 import goit.controler.util.HttpVersion;
 import goit.model.Entity;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class WebClient2<T extends Entity> implements Request<T>{
-    private Socket socket;
+    private static Socket socket;
     private String host;
     private InetAddress ipHost;
     private int port;
@@ -51,15 +52,6 @@ public class WebClient2<T extends Entity> implements Request<T>{
         socket = new Socket(ipHost, port);
     }
 
-    private void initHeaders(){
-        headers = new HashMap<>();
-        headers.put(HttpHeaders.HOST.getName(), host);
-        headers.put(HttpHeaders.ACCEPT.getName(), HttpHeaders.ACCEPT.getDefaultValue());
-        headers.put(HttpHeaders.ACCEPT_LANGUAGE.getName(), HttpHeaders.ACCEPT_LANGUAGE.getDefaultValue());
-        headers.put(HttpHeaders.ACCEPT_ENCODING.getName(), HttpHeaders.ACCEPT_ENCODING.getDefaultValue());
-        headers.put(HttpHeaders.CONNECTION.getName(), HttpHeaders.CONNECTION.getDefaultValue());
-    }
-
     @Override
     public T getById(int id) {
         return null;
@@ -91,8 +83,8 @@ public class WebClient2<T extends Entity> implements Request<T>{
         try {
             this.headers = headers;
             String toJson = getResponseResult();
-            System.out.println(toJson);
-            String json = toJson.substring(toJson.indexOf("\r\n\r\n")+3);
+            System.out.println(toJson);                                   ///DEBUG
+            String json = toJson.substring(toJson.indexOf("\r\n\r\n"));
             return new Gson().fromJson(json, (Class<T>) clazz);
         } catch (IOException e) {
             e.printStackTrace();
@@ -131,12 +123,26 @@ public class WebClient2<T extends Entity> implements Request<T>{
     }
 
     @Override
-    public void POST(Entity entity) {
-
+    public String POST(Map<String, String> headers, T entity) {
+        this.headers = headers;
+        String body = new Gson().toJson(entity);
+        headers.put("body", body);
+        headers.put(HttpHeaders.CONTENT_LENGTH.getName(), String.valueOf(body.getBytes().length));
+        headers.put(HttpHeaders.CONTENT_TYPE.getName(), HttpHeaders.CONTENT_TYPE.getDefaultValue());
+        try {
+            String result = getResponseResult();
+            headers.remove(HttpHeaders.CONTENT_LENGTH.getName());
+            headers.remove(HttpHeaders.CONTENT_TYPE.getName());
+            return result;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     @Override
-    public void PUT(Entity entity) {
+    public void PUT(Map<String, String> headers, T entity) {
+        this.headers = headers;
 
     }
 
@@ -145,11 +151,27 @@ public class WebClient2<T extends Entity> implements Request<T>{
 
     }
 
+    public String getResponceString(Map<String, String> headers) throws IOException{
+        this.headers = headers;
+        return getResponseResult();
+    }
+
     private String getResponseResult() throws IOException {
-        BufferedWriter writer = new BufferedWriter(
+
+        initSocket(HttpHeaders.HOST.getDefaultValue(), 80);
+        BufferedWriter writer = null;
+        writer = new BufferedWriter(
                 new OutputStreamWriter(socket.getOutputStream())
         );
-//        BufferedWriter writer = new BufferedWriter(new FileWriter("3.txt"));
+        DialogService.printSlip("response: ", 288);
+        System.out.println(headers.get("startline"));
+
+        String body = null;
+        if (headers.containsKey("body")) {
+            body = headers.remove("body");
+        }
+
+//        writer = new BufferedWriter(new FileWriter("3.txt"));
         writer.write(headers.remove("startline") + "\r\n");
         for (Map.Entry<String, String> e:
              headers.entrySet()) {
@@ -157,6 +179,10 @@ public class WebClient2<T extends Entity> implements Request<T>{
             writer.write(e.getKey() + ": " + e.getValue() + "\r\n");
         }
         writer.write("\r\n");
+        if (null != body){
+            writer.write(body + "\r\n");
+        }
+        System.out.println();  //--------------------------_DEBUG POINT
         writer.flush();
 
 
@@ -166,7 +192,45 @@ public class WebClient2<T extends Entity> implements Request<T>{
         while ((line = reader.readLine()) != null){
             sb.append(line).append("\r\n");
         }
-        return String.valueOf(sb);
+        String result = String.valueOf(sb);
+        writer.close();
+        socket.close();
+        return result;
     }
 
 }
+
+//if (headers.containsKey(HttpHeaders.CONTENT_LENGTH)){
+//        writer.write(HttpHeaders.CONTENT_LENGTH.getName() + ": " +
+//        headers.remove(HttpHeaders.CONTENT_LENGTH.getName()) + "\r\n");
+//        }
+//
+//        if (headers.containsKey("body")) {
+//        writer.write("\r\n");
+//        writer.write(headers.remove("body"));
+//        }
+//
+//
+////        BufferedWriter writer = new BufferedWriter(new FileWriter("3.txt"));
+//        writer.write(headers.remove("startline") + "\r\n");
+//        for (Map.Entry<String, String> e:
+//        headers.entrySet()) {
+//        System.out.print(e.getKey() + ": " + e.getValue() + "\r\n");
+//        writer.write(e.getKey() + ": " + e.getValue() + "\r\n");
+//        }
+//
+//
+//        writer.write("\r\n");
+//        writer.flush();
+//
+//
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//        StringBuilder sb = new StringBuilder();
+//        String line;
+//        while ((line = reader.readLine()) != null){
+//        sb.append(line).append("\r\n");
+//        }
+//        String result = String.valueOf(sb);
+//        socket.close();
+//        return result;
+//        }

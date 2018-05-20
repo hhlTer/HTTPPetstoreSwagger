@@ -4,21 +4,23 @@ import java.util.Scanner;
 
 public class DialogService {
     public static char getAnswer(String crud) {
-        System.out.println(":>");
+        System.out.print(":>");
         Scanner sc = new Scanner(System.in);
         String answer = sc.nextLine();
         char c = ' ';
         if (answer.length() > 0) {
             c = answer.toLowerCase().charAt(0);
         }
-        if (!crud.contains("" + c))
-            getAnswer(crud);
-        return c;
+        if (crud.contains("" + c)){
+            return c;
+        }
+         return getAnswer(crud);
     }
 
     public static long getLongId() {
+        System.out.print("Enter id ");
         try {
-            Thread.sleep(1000);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -33,5 +35,14 @@ public class DialogService {
             getLongId();
         }
         return id;
+    }
+
+    public static void printSlip(String text, long ms){
+        System.out.println(text);
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

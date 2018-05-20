@@ -12,6 +12,6 @@ public class User implements Entity{
 
     @Override
     public String getPatch() {
-        return null;
+        return "/v2/user";
     }
 }

@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GeneralDialog<T extends Entity> implements CaseDialog {
+public class GeneralDialog<T extends Entity> {
     static WebClient2 petWebClient2;
 
     static{
@@ -24,7 +24,7 @@ public class GeneralDialog<T extends Entity> implements CaseDialog {
         }
     }
 //    private static Socket socket = WebClient.getInstance().getSocket();
-    private Map<String, String> headers = new HashMap<>();
+    protected Map<String, String> headers = new HashMap<>();
 
     GeneralDialog(){
         headers.put(HttpHeaders.HOST.getName(), HttpHeaders.HOST.getDefaultValue());
@@ -35,7 +35,7 @@ public class GeneralDialog<T extends Entity> implements CaseDialog {
         headers.put(HttpHeaders.CONNECTION.getName(), HttpHeaders.CONNECTION.getDefaultValue());
     }
 
-    T getEntityByPath(String path, Class clazz) throws IOException {
+    T getEntityByPath(String path, Class clazz){
         StringBuilder sb = new StringBuilder();
         headers.put("startline", startGenerate(RequestCommands.GET, path, HttpVersion.HTTP_1_1));
         T t = (T) petWebClient2.GET(headers, clazz);
@@ -49,15 +49,26 @@ public class GeneralDialog<T extends Entity> implements CaseDialog {
         return ts;
     }
 
+    String getStringResult(String path){
+        String startline = startGenerate(RequestCommands.GET, path, HttpVersion.HTTP_1_1);
+        headers.put("startline", startline);
+        try {
+            return petWebClient2.getResponceString(headers);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    String postEntity(T t){
+        String startLine = startGenerate(RequestCommands.POST, t.getPatch(), HttpVersion.HTTP_1_1);
+        headers.put("startline", startLine);
+        return petWebClient2.POST(headers, t);
+    }
+
     private String startGenerate(RequestCommands commands, String path, HttpVersion version){
         StringBuilder sb = new StringBuilder();
         sb.append(commands.name()).append(" ").append(path).append(" ").append(version.getName());
         return String.valueOf(sb);
     }
-
-
-    @Override
-    public void getDialog() {
-    }
-
 }

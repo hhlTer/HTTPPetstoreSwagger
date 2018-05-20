@@ -7,7 +7,9 @@ public enum HttpHeaders {
     USER_AGENT("User-Agent"),
     REFERER("Referer"),
     ACCEPT_ENCODING("Accept-Encoding"),
-    ACCEPT_LANGUAGE("Accept-Language");
+    ACCEPT_LANGUAGE("Accept-Language"),
+    CONTENT_TYPE("Content-Type"),
+    CONTENT_LENGTH("Content-Length");
 
     private String name;
     private String defaultValue;
@@ -38,6 +40,7 @@ public enum HttpHeaders {
                 name.equals(REFERER.name) ? "http://petstore.swagger.io" :
                 name.equals(ACCEPT_ENCODING.name) ? "gzip, deflate" :
                 name.equals(ACCEPT_LANGUAGE.name) ? "en-US,en;q=0.9" :
+                name.equals(CONTENT_TYPE.name) ? "application/json" :
                         null;
     }
 }

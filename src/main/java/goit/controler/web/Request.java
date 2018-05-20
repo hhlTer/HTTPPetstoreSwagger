@@ -15,7 +15,7 @@ public interface Request<T> {
 //    T getByPath(String patch, Class<T> tClass) throws IOException;
     T GET(Map<String, String> headers, Class<T> tClass);
     List<T> GETList(Map<String, String> headers, Type tClass);
-    void POST(T t);
-    void PUT(T t);
+    String POST(Map<String, String> headers, T t);
+    void PUT(Map<String, String> headers, T t);
     void DELETE(T t);
 }

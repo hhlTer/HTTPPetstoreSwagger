@@ -15,36 +15,32 @@ public class Main {
 
 
     private void testJson(){
-        Pet pet = new Main().fillPet();
-        Gson gson = new Gson();
-        String json = gson.toJson(pet);
-        System.out.println(json);
-//        WebClient client = new WebClient();
+          WebClient client = new WebClient();
 //        client.start();
     }
-    private Pet fillPet(){
-        Pet pet = new Pet();
-
-        Category category = new Category();
-        category.id = 0;
-        category.name = "category string";
-        pet.category = category;
-
-        Tag[] tags = new Tag[1];
-        tags[0] = getTags();
-        pet.tags = tags;
-
-        String[] photos = new String[1];
-        photos[0] = "photoURI1";
-        pet.photoUrls = photos;
-
-        pet.id = 1;
-        pet.name = "Butuz";
-
-        pet.status = PetStatus.available;
-
-        return pet;
-    }
+//    private Pet fillPet(){
+//        Pet pet = new Pet();
+//
+//        Category category = new Category();
+//        category.id = 0;
+//        category.name = "category string";
+//        pet.category = category;
+//
+//        Tag[] tags = new Tag[1];
+//        tags[0] = getTags();
+//        pet.tags = tags;
+//
+//        String[] photos = new String[1];
+//        photos[0] = "photoURI1";
+//        pet.photoUrls = photos;
+//
+//        pet.id = 1;
+//        pet.name = "Butuz";
+//
+//        pet.status = PetStatus.available;
+//
+//        return pet;
+//    }
 
     private Tag getTags(){
         Tag tag = new Tag();

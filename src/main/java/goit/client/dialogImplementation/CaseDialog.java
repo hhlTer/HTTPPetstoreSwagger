@@ -5,4 +5,5 @@ import goit.model.GeneralEntity;
 
 public interface CaseDialog{
     void getDialog();
+    void postDialog();
 }
